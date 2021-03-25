@@ -29,6 +29,7 @@ function completeGetRequest() {
                 console.error('Error CREATING ITEM: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
             }
+			
         });
     }
 
