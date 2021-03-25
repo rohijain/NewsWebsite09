@@ -1,6 +1,6 @@
 window._config = {
 	
 	api: {
-		invokeUrl: 'https://zl60zc7o2m.execute-api.us-east-1.amazonaws.com/Prod'
+		invokeUrl: 'https://mgqv8kkz3i.execute-api.eu-central-1.amazonaws.com/Prod'
 	}
 };
