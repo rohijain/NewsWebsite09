@@ -1,11 +1,13 @@
 function getNewsItemsForDate() {
     console.log(_config.api.invokeUrl);
-
-
-	fetch(_config.api.invokeUrl + '/getnews' + "?news_date=09-01-1993")
+	
+	console.log("news date::" + $("#getNewsDateId").val());
+	fetch(_config.api.invokeUrl + '/getnews' + "?news_date=" + $("#getNewsDateId").val())
 	.then(response => response.json())
-	.then(data => console.log(data));
- 
+	.then(data => {
+		console.log(data);
+		$("#newsForDate").text(JSON.stringify(data.newsItems.Items));
+	});
 }
 
 function completeGetRequest() {
@@ -13,23 +15,19 @@ function completeGetRequest() {
 }
 
  function createNewsItem() {
-        $.ajax({
-            method: 'POST',
-            url: _config.api.invokeUrl + '/createnewsitem',
-            data: JSON.stringify({
-                NewsItem: {
-                    news_date: "09-09-1993",
-                    news_title: "news title",
-					news_body: "some news from somewhere"
-                }
-            }),
-            contentType: 'application/json',
-            success: completeRequest,
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error CREATING ITEM: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR.responseText);
-            }
-			
-        });
+
+fetch(_config.api.invokeUrl + '/postnews', {
+  method: 'POST', 
+  body: JSON.stringify({
+               
+                    news_date: $("#postNewsDateId").val(),
+                    news_title: $("#postNewsTitleId").val(),
+					news_body: $("#postNewsNewsBodyId").val()
+            })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
     }
 

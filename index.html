@@ -1,19 +1,30 @@
-<!doctype html>
-<html class="no-js" lang="">
-<head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/ContentController.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>News Company</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	<script src="js/ContentController.js"></script>
+	<script src="js/config.js"></script>
+  </head>
+  <body>
 
-</head>
-<body>
-	<div>found some news for you</div>
-	<button type="button" onclick="getNewsItemsForDate()">getNewsItemFor!</button>
-	<div id="example_text"></div>
-	</br>
-	</br>
-	<button type="button" onclick="createNewsItem()">createNewsItem!</button>
-	<div id="news"></div>
+    <form onsubmit="createNewsItem();return false">
+        <h1>Post News</h1>
+        <input type="date" id="postNewsDateId" required>
+        <input type="text" placeholder="News Title" id="postNewsTitleId" required>
+        <input type="text" placeholder="News Body" rows="5" id="postNewsNewsBodyId" required></textarea>
+        <button type="submit">Post News</button>
+      </div>
+    </form>
+	
+    <form onsubmit="getNewsItemsForDate();return false">
+        <h1>Get News</h1>
+        <input type="date" id="getNewsDateId" required>
+        <button type="submit">Get News</button>
+      </div>
+    </form>
+	<div id="newsForDate"> news for date</div>
+  </body>
+</html>
 
-</body>
 
