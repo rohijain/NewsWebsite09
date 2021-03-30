@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  GithubRepository:
+    Description: GitHub Repository URL
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /service/sam-app/github/repo/url
+  GithubToken:
+    Description: Github Token
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /service/sam-app/github/token
+  SkyWorkzDomain:
+    Description: Customon domainfor SkyWorkz
+    Type: String
+    Default: account-0.aws-tests.skyworkz.nl
+
+Resources:
+  AmplifyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - amplify.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Amplify
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+
+  AmplifyApp:
+    Type: 'AWS::Amplify::App'
+    Properties:
+      Name: News-amplify-app
+      Repository: !Ref GithubRepository
+      Description: Website for news rendering
+      OauthToken: !Ref GithubToken
+      BuildSpec: |-
+        version: 1
+        frontend:
+          phases:
+            # IMPORTANT - Please verify your build commands
+            build:
+              commands: []
+          artifacts:
+            # IMPORTANT - Please verify your build output directory
+            baseDirectory: /
+            files:
+              - '**/*'
+          cache:
+            paths: []
+      AutoBranchCreationConfig:
+        EnableAutoBranchCreation: True
+        EnableAutoBuild: True
+      IAMServiceRole: !GetAtt AmplifyRole.Arn
+
+  AmplifyBranch:
+    Type: AWS::Amplify::Branch
+    Properties:
+      AppId: !GetAtt AmplifyApp.AppId
+      BranchName: master
+      EnableAutoBuild: True
+      Stage: DEVELOPMENT
+        
+  AmplifyDomain:
+    Type: AWS::Amplify::Domain
+    Properties:
+      DomainName: !Ref SkyWorkzDomain
+      AppId: !GetAtt AmplifyApp.AppId
+      SubDomainSettings:
+        - Prefix: master
+          BranchName: !GetAtt AmplifyBranch.BranchName
+
+Outputs:
+  AmplifyAppId:
+    Value: !Ref AmplifyApp
+
+  DefaultDomain:
+    Value: !Sub master.${AmplifyApp.DefaultDomain}
+
+  BranchUrl:
+    Value: !Sub master.${AmplifyDomain.DomainName}
